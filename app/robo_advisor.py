@@ -1,4 +1,6 @@
 # app/robo_advisor.py
+#create .env 
+
 
 print("-------------------------")
 print("SELECTED SYMBOL: XYZ")
