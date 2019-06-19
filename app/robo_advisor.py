@@ -1,5 +1,23 @@
 # app/robo_advisor.py
 #create .env 
+# I did need some help from the screencast found at: https://www.youtube.com/watch?v=UXAVOP1oCog&t=847s
+
+import requests
+import json
+
+#INPUTS:
+request_url ="https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=demo"
+response = requests.get(request_url)
+print(type(response)) #<class 'requests.models.Response'>
+print(response.status_code) #200
+print(response.text)
+
+parsed_response = json.loads(response.text)
+
+
+
+quit()
+
 
 
 print("-------------------------")
