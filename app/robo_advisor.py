@@ -48,9 +48,9 @@ with open(csv_file_path, "w") as csv_file:
     for date in dates:    
         writer.writerow({
             "timestamp":date,
-            "open":"placeholder",
-            "close":"placeholder",
-            "volume":"placeholder"})
+            "open":tsd[date]["1. open"],
+            "close":tsd[date]["4. close"],
+            "volume":tsd[date]["5. volume"]})
 
 #print(high_prices)
 
