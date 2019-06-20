@@ -2,8 +2,11 @@
 #create .env 
 # I did need some help from the screencast found at: https://www.youtube.com/watch?v=UXAVOP1oCog&t=847s
 
-import requests
+import csv
 import json
+import os
+
+import requests
 import datetime
 
 def to_usd(my_price):
@@ -28,14 +31,26 @@ low_prices = []
 for date in dates:
     high_price = tsd[date]["2. high"]
     high_prices.append(float(high_price))
-
-recent_high = max(high_prices)
-
-for date in dates:
     low_price = tsd[date]["3. low"]
     low_prices.append(float(low_price))
 
+recent_high = max(high_prices)
 recent_low = min(low_prices)
+
+csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
+csv_headers = ["timestamp", "open", "close", "volume"]
+
+
+with open(csv_file_path, "w") as csv_file:
+    
+    writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
+    writer.writeheader()
+    for date in dates:    
+        writer.writerow({
+            "timestamp":date,
+            "open":"placeholder",
+            "close":"placeholder",
+            "volume":"placeholder"})
 
 #print(high_prices)
 
@@ -61,5 +76,9 @@ print("-------------------------")
 print("RECOMMENDATION: BUY!")
 print("RECOMMENDATION REASON: TODO")
 print("-------------------------")
+print(f"WRITING DATA TO CSV FILE: {csv_file_path}")
+print("-------------------------")
 print("HAPPY INVESTING!")
 print("-------------------------")
+
+
