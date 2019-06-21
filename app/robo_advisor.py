@@ -95,9 +95,11 @@ print("HAPPY INVESTING!")
 print("-------------------------")
 
 price_data = pandas.read_csv(csv_file_path)
+#print(price_data.columns)
 
+price_data_filtered = price_data["close"]
 
-price_data.plot()
+price_data_filtered.plot()
 plt.show()
 
 #print(price_data)
