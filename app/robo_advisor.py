@@ -5,11 +5,15 @@
 import csv
 import json
 import os
+import pandas
+import matplotlib.pyplot as plt
+
 
 
 from dotenv import load_dotenv
 import requests
 import datetime
+
 
 load_dotenv()
 def to_usd(my_price):
@@ -18,8 +22,9 @@ def to_usd(my_price):
 #INPUTS:
 
 api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
-print(api_key)
-symbol = []
+#print(api_key)
+
+symbol = input("Please select a stock symbol (e.g. MSFT) and press enter: ")
 
 request_url =f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"
 response = requests.get(request_url)
@@ -71,7 +76,7 @@ with open(csv_file_path, "w") as csv_file:
 
 
 print("-------------------------")
-print("SELECTED SYMBOL: XYZ")
+print(f"SELECTED SYMBOL: {symbol}")
 print("-------------------------")
 print("REQUESTING STOCK MARKET DATA...")
 print(f"REQUEST AT: {now}")
@@ -88,5 +93,13 @@ print(f"WRITING DATA TO CSV FILE: {csv_file_path}")
 print("-------------------------")
 print("HAPPY INVESTING!")
 print("-------------------------")
+
+price_data = pandas.read_csv(csv_file_path)
+
+
+price_data.plot()
+plt.show()
+
+#print(price_data)
 
 
