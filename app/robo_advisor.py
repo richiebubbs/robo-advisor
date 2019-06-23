@@ -7,10 +7,10 @@ import json
 import os
 import pandas as pd 
 import matplotlib.pyplot as plt
-from functools import reduce
+import time
 
 
-
+import statistics
 from dotenv import load_dotenv
 import requests
 import datetime
@@ -97,13 +97,32 @@ while not a:
         
         
         #quit()
+        price_data = pd.read_csv(csv_file_path)
+        #print(price_data.columns)
+        
+        price_data_filtered = price_data["close"]
+
+        # Here I am using standard deviation to measure volatility.  
+        # A higher standard deviation would represent greater risk.  
+        # I am using std between 0 and 5 to be defined as low risk
+        # (essentially a standard deviation of x dollars signifies that 
+        # 95% of the time the stock won't stray more than x dollars from its last closing price)
+        # std >5-10 would be moderately risky
+        # std over 10 is high risk
+        # format help from https://stackoverflow.com/questions/455612/limiting-floats-to-two-decimal-points
+        volatility = statistics.stdev(price_data_filtered)
+        volatility_format = float("{0:.2f}".format(volatility))
+        #print(volatility)
         
         
         
         print("-------------------------")
         print(f"SELECTED SYMBOL: {symbol}")
         print("-------------------------")
-        print("REQUESTING STOCK MARKET DATA...")
+        print("REQUESTING STOCK MARKET DATA") 
+        time.sleep(1)
+        print("............................")
+        time.sleep(1)
         print(f"REQUEST AT: {now}")
         print("-------------------------")
         print(f"LATEST DAY: {last_refreshed} ")
@@ -111,22 +130,80 @@ while not a:
         print(f"RECENT HIGH: {to_usd(float(recent_high))}")
         print(f"RECENT LOW: {to_usd(float(recent_low))}")
         print("-------------------------")
-        print("RECOMMENDATION: BUY!")
-        print("RECOMMENDATION REASON: TODO")
-        print("-------------------------")
-        print(f"WRITING DATA TO CSV FILE: {csv_file_path}")
-        print("-------------------------")
-        print("HAPPY INVESTING!")
-        print("-------------------------")
-        
-        price_data = pd.read_csv(csv_file_path)
-        #print(price_data.columns)
-        
-        price_data_filtered = price_data["close"]
-        
-        price_data_filtered.plot()
-        plt.show()
+        b = False
+        while not b:
+            risk_preference = input("What is your risk tolerance? Choose:(LOW, MODERATE, HIGH):  ")
+            accepted_responses = ["LOW", "MODERATE", "HIGH"]
+            if risk_preference not in accepted_responses:
+                print("I'm sorry, I do not understand.  Please choose: LOW, MODERATE, HIGH - all caps, as it is case sensitive... ")
+                b = False
+            # I AM SURE THERE IS A MORE ELEGANT WAY TO WRITE THE FOLLOWING IN FEWER LINES USING A LOOPING FUNCTION, BUT THIS IS WHAT I HAVE...
+            else:
+                if risk_preference == "LOW" and volatility <5:
+                    print("RECOMMENDATION: ")
+                    time.sleep(1)
+                    print("BUY!")
+                    time.sleep(1)
+                    print(f"RECOMMENDATION REASON: VOLATILITY = {volatility_format}, THIS IS A SAFE STOCK BASED ON YOUR RISK PREFERENCE")
+                    time.sleep(1)
+                elif risk_preference == "LOW" and volatility >5:
+                    print("RECOMMENDATION: ")
+                    time.sleep(1)
+                    print("DO NOT BUY!")
+                    time.sleep(1)
+                    print(f"RECOMMENDATION REASON: VOLATILITY = {volatility_format}, THIS STOCK IS TOO RISKY BASED ON YOUR RISK PREFERENCE")
+                    time.sleep(1)
+                elif risk_preference == "MODERATE" and volatility <10 :
+                    print("RECOMMENDATION: ")
+                    time.sleep(1)
+                    print("BUY!")
+                    time.sleep(1)
+                    print(f"RECOMMENDATION REASON: VOLATILITY = {volatility_format}, THIS IS A SAFE STOCK BASED ON YOUR RISK PREFERENCE")
+                    time.sleep(1)
+                elif risk_preference == "MODERATE" and volatility >10:
+                    print("RECOMMENDATION: ")
+                    time.sleep(1)
+                    print("DO NOT BUY!")
+                    time.sleep(1)
+                    print(f"RECOMMENDATION REASON: VOLATILITY = {volatility_format}, THIS STOCK IS TOO RISKY BASED ON YOUR RISK PREFERENCE")
+                    time.sleep(1)
+                elif risk_preference == "HIGH" and volatility <5:
+                    print("RECOMMENDATION: ")
+                    time.sleep(1)
+                    print("BUY FOR A SAFE INVESTMENT")
+                    time.sleep(1)
+                    print(f"RECOMMENDATION REASON: VOLATILITY = {volatility_format}, THIS STOCK IS A SAFE INVESTMENT, HOWEVER IT MAY NOT HAVE THE GROWTH POTENTIAL A RISK-TOLERANT INVESTOR LIKE YOU MAY BE LOOKING FOR")
+                    time.sleep(1)
+                elif risk_preference == "HIGH" and volatility >5 and volatility <10:
+                    print("RECOMMENDATION: ")
+                    time.sleep(1)
+                    print("BUY!")
+                    time.sleep(1)
+                    print(f"RECOMMENDATION REASON: VOLATILITY = {volatility_format}, THIS IS A GOOD STOCK BASED ON YOUR RISK PREFERENCE WITH POTENTIAL GROWTH!")
+                    time.sleep(1)
+                elif risk_preference == "HIGH" and volatility >10:
+                    print("RECOMMENDATION: ")
+                    time.sleep(1)
+                    print("BUY WITH CAUTION!")
+                    time.sleep(1)
+                    print(f"RECOMMENDATION REASON: VOLATILITY = {volatility_format}, THIS IS A GOOD STOCK BASED ON YOUR RISK PREFERENCE WITH POTENTIAL GROWTH, HOWEVER THE VOLATILITY IS HIGH, SO PROCEED WITH CAUTION!")
+                    time.sleep(1)
+                print("-------------------------")
+                print(f"WRITING DATA TO CSV FILE: {csv_file_path}")
+                print("-------------------------")
+                print("HAPPY INVESTING!")
+                print("-------------------------")
+                time.sleep(1.5)
+                print("WARNING: THIS APP IS A TOOL TO OFFER SOME LITTLE INSIGHT INTO THE STOCK MARKET, AND MAY NOT ADDRESS ALL OF YOUR INDIVIDUAL NEEDS.")
+                print("PLEASE INVEST WISELY AND WITH HELP FROM A FINANCIAL ADVISOR")
+                print("THE MAKERS OF THIS APP DO NOT GUARANTEE RETURNS, YOUR INVESTMENT IN THE STOCK MARKET MAY LOSE VALUE")
+                b = True
+       
+
+        #price_data_filtered.plot()
+        #plt.show()
         a = True
+        b = True
         #print(price_data)
 
 
